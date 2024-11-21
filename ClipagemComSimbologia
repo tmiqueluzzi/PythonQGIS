@@ -1,0 +1,48 @@
+#Crie uma camada 'Área' com a área de interesse
+#Edite o caminho de saída.
+
+import os
+from qgis.core import QgsProject, QgsMapLayer
+
+# Função para clipar uma camada
+def clipe_layer(layer, aoi_layer, output_path):
+    # Clipa a camada e salva a saída
+    params = {
+        'INPUT': layer,
+        'OVERLAY': aoi_layer,
+        'OUTPUT': output_path
+    }
+    processing.run("qgis:clip", params)
+    
+    # Retorna o caminho da camada clipada
+    return output_path
+
+# Função para salvar a simbologia da camada original
+def salvar_simbologia(layer, output_path):
+    # Salva a simbologia da camada original como um arquivo .qml
+    qml_path = output_path.replace('.shp', '.qml')
+    layer.saveNamedStyle(qml_path)
+    return qml_path
+
+# Define a camada de área de interesse (AOI)
+aoi_layer = QgsProject.instance().mapLayersByName('Area')[0]  # Substitua pelo nome da camada AOI
+
+# Pega todas as camadas shapefile carregadas no projeto, exceto a camada de AOI
+shapefile_layers = [layer for layer in QgsProject.instance().mapLayers().values() if layer.type() == QgsMapLayer.VectorLayer and layer.name() != 'Area']
+
+# Define o diretório onde os arquivos de saída serão salvos
+output_directory = 'XXXXXXXX'  # Substitua pelo caminho da sua pasta de saída
+
+# Loop para clipar cada camada shapefile
+for layer in shapefile_layers:
+    output_path = os.path.join(output_directory, f'{layer.name()}_clipado.shp')
+    
+    # Clipar a camada
+    clipe_layer(layer, aoi_layer, output_path)
+    
+    # Salvar a simbologia da camada original
+    simbologia_path = salvar_simbologia(layer, output_path)
+    
+    print(f"Simbologia salva em: {simbologia_path}")
+
+print("Processo de clipping concluído com simbologia salva!")
