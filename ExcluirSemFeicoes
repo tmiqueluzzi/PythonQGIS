@@ -1,0 +1,26 @@
+from qgis.core import QgsProject, QgsMapLayer
+
+# Função para excluir camadas com contagem de feições igual a 0
+def excluir_camadas_sem_feicoes():
+    # Pega todas as camadas carregadas no projeto
+    camadas = QgsProject.instance().mapLayers().values()
+    
+    # Lista temporária para armazenar os IDs das camadas a serem removidas
+    ids_a_remover = []
+
+    # Itera sobre as camadas
+    for camada in camadas:
+        # Verifica se a camada é um vetor
+        if camada.type() == QgsMapLayer.VectorLayer:
+            # Verifica a contagem de feições da camada
+            if camada.featureCount() == 0:
+                # Adiciona o ID da camada na lista de remoção
+                ids_a_remover.append(camada.id())
+    
+    # Remove as camadas com base em seus IDs
+    for camada_id in ids_a_remover:
+        QgsProject.instance().removeMapLayer(camada_id)
+        print(f"Camada com ID '{camada_id}' excluída (sem feições).")
+
+# Chamar a função para excluir as camadas sem feições
+excluir_camadas_sem_feicoes()
