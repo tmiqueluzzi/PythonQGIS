@@ -1,0 +1,38 @@
+import processing
+from qgis.core import QgsProject, QgsRasterLayer
+
+alg = 'OTDEMDownloader:OpenTopography DEM Downloader'
+
+layer = QgsProject.instance().mapLayersByName('XXX')[0]
+
+# Obter a extensão (bounding box) da camada
+extent = layer.extent()
+xmin = extent.xMinimum()
+xmax = extent.xMaximum()
+ymin = extent.yMinimum()
+ymax = extent.yMaximum()
+
+# Obter o SRC da camada
+crs = layer.crs()
+crs_epsg = crs.authid()
+
+# Definir parâmetros (substitua pelos reais)
+params = {
+    'API_key': 'XXXXXXXX',
+    'DEMs': 1,
+    "Extent":f'{xmin},{xmax}, {ymin}, {ymax}[{crs_epsg}]',
+    'OUTPUT': 'TEMPORARY_OUTPUT'
+}
+
+# Executa o algoritmo
+result = processing.run(alg, params)
+
+# Obtém o caminho do arquivo TIFF gerado
+output_tiff = result['OUTPUT']
+
+# Carrega o arquivo TIFF no projeto QGIS
+raster_layer = QgsRasterLayer(output_tiff, "DEM OpenTopography")
+if raster_layer.isValid():
+    QgsProject.instance().addMapLayer(raster_layer)
+else:
+    print("Falha ao carregar o TIFF resultante")
