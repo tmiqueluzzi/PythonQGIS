@@ -1,0 +1,29 @@
+import processing
+from PyQt5.QtWidgets import QInputDialog
+
+
+# Caixa de diálogo para entrada do CRS
+crs, ok = QInputDialog.getText(None, 'Entrada de CRS', 'Digite o código EPSG (ex: EPSG:4326):')
+
+# Defina o caminho do raster de entrada e o SRC desejado (por exemplo, EPSG:4326)
+input_raster = QgsProject.instance().mapLayersByName('DEM OpenTopography')[0]
+target_crs = f'EPSG:{crs}'
+
+# Parâmetros para reprojeção
+params = {
+    'INPUT': input_raster,
+    'TARGET_CRS': target_crs,
+    'RESAMPLING': 1,
+    'OUTPUT': 'TEMPORARY_OUTPUT'
+}
+
+# Executa a reprojeção usando o algoritmo de processamento do QGIS
+result = processing.run("gdal:warpreproject", params)
+output_raster = result['OUTPUT']
+
+# Opcional: Adiciona o raster reprojetado ao projeto
+raster_layer = QgsRasterLayer(output_raster, "Raster Reprojetado")
+if raster_layer.isValid():
+    QgsProject.instance().addMapLayer(raster_layer)
+else:
+    print("Falha ao carregar o raster reprojetado")
