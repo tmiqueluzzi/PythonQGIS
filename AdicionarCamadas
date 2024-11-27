@@ -8,10 +8,9 @@ from qgis.core import QgsVectorLayer, QgsProject
 3. Percorre as pastas e subpastas, adicionando os arquivos '.shp' à lista criada no passo anterior;
 4. Roda a lista, adicionando os arquivos.
 '''
-# ALTERE A PROXIMA VARIÁVEL!
 
 # Caminho principal onde estão localizados os shapefiles
-base_path = "XXXX" #ALTERE
+base_path, ok = QInputDialog.getText(None, "Caminho", "Indique o caminho que o código percorrerá: ")
 
 # Lista para armazenar os caminhos dos shapefiles
 shapefiles = []
