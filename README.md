@@ -23,4 +23,19 @@ Automatiza o processo de varredura de um diretório indicado pelo operar e suas 
 ## ReprojetaRaster
 
 
-## 
+## ObterDeclividade
+
+
+## VetorizaRaster
+
+
+## SimbologiaAltitude
+
+
+## SimbologiaDeclividade
+
+
+## CriarMapa
+
+
+## EditarMapa
