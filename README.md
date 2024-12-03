@@ -13,6 +13,10 @@ Automatiza o processo de varredura de um diretório indicado pelo operar e suas 
 
 ## ClipagemComSimbologia
 
+Realiza o processo de clipagem de todas as camadas shapefile carregadas em um projeto QGIS, utilizando uma camada de área de interesse (AOI). Após a clipagem, ele salva a simbologia de cada camada original em um arquivo separado.
+
+Requisitos:
+- A camada de AOI deve estar carregada no projeto e ser referenciada pelo nome 'Area'.
 
 ## ExcluirSemFeicoes
 
