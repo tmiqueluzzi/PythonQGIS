@@ -18,8 +18,21 @@ Realiza o processo de clipagem de todas as camadas shapefile carregadas em um pr
 Requisitos:
 - A camada de AOI deve estar carregada no projeto e ser referenciada pelo nome 'Area'.
 
+Bibliotecas:
+- `os`: Para manipulação de caminhos e arquivos.
+- `qgis.core`: Para interagir com camadas e projetos do QGIS.
+- `processing`: Para executar a ferramenta de processamento de clipagem.
+
 ## ExcluirSemFeicoes
 
+Percorre todas as camadas vetoriais carregadas no projeto do QGIS e remove automaticamente aquelas que não possuem feições (ou seja, cuja contagem de feições é igual a 0);
+Camadas Raster não são afetadas.
+
+Requisitos:
+- O projeto deve conter camadas carregadas.
+
+Bibliotecas:
+- `qgis.core`: Para interagir com as camadas e o projeto QGIS.
 
 ## ObterAltitude
 
