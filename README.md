@@ -53,6 +53,16 @@ Bibliotecas:
 
 ## ReprojetaRaster
 
+Realiza a reprojeção de um raster já carregado no projeto QGIS para um Sistema de Referência de Coordenadas (SRC) especificado pelo usuário. O código EPSG do SRC desejado é fornecido por meio de uma caixa de diálogo de entrada.
+
+Requisitos:
+- O raster de entrada deve estar carregado no projeto QGIS.
+- O nome do raster de entrada deve ser fornecido corretamente.
+- O código EPSG válido deve ser informado pelo usuário.
+
+Bibliotecas:
+- `processing`: Para executar a reprojeção usando o algoritmo GDAL do QGIS.
+- `PyQt5.QtWidgets.QInputDialog`: Para solicitar ao usuário o código EPSG desejado.
 
 ## ObterDeclividade
 
