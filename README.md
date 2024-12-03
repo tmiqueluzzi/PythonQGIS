@@ -40,6 +40,16 @@ Bibliotecas:
 
 ## ObterAltitude
 
+Utiliza o plugin `OTDEMDownloader` para baixar um modelo digital de elevação (DEM) a partir da API do OpenTopography. Ele extrai os parâmetros da camada de entrada (extensão e sistema de referência de coordenadas - SRC), executa o download e adiciona o DEM resultante como uma camada ao projeto QGIS.
+
+Requisitos:
+- O plugin `OTDEMDownloader` deve estar instalado no QGIS.
+- Uma camada vetorial de entrada carregada no projeto QGIS.
+- Uma chave de API válida do OpenTopography.
+
+Bibliotecas:
+- `processing`: Para executar o algoritmo de download do DEM.
+- `qgis.core`: Para interagir com camadas e projetos QGIS.
 
 ## ReprojetaRaster
 
