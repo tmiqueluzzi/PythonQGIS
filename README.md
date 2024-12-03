@@ -4,12 +4,16 @@ Algumas funções úteis no QGis utilizando a linguagem python.
 
 ## AdicionarCamadas
 
-Automatiza o processo de varredura de um diretório indicado pelo operar e suas subpastas em busca de arquivos no formato shapefile (.shp) e os adiciona ao projeto QGIS atual.
+Percorre um diretório especificado pelo usuário, identifica todos os arquivos com extensão `.shp` (shapefiles) em suas subpastas, e os adiciona ao projeto QGIS atual.
 
-1. Pega o caminho indicado pelo operador;
-2. Cria a lista que vai armazenar os caminhos para os arquivos '.shp';
-3. Percorre as pastas e subpastas, adicionando os arquivos '.shp' à lista criada no passo anterior;
-4. Roda a lista, adicionando os arquivos.
+Requisitos:
+- O script deve ser executado no ambiente do QGIS.
+- O caminho para o diretório de origem deve ser fornecido pelo usuário.
+
+Bibliotecas:
+- `os`: Para navegação no sistema de arquivos.
+- `qgis.core`: Para manipulação de camadas e projetos QGIS.
+- `QInputDialog`: Para permitir que o usuário insira o caminho do diretório.
 
 ## ClipagemComSimbologia
 
