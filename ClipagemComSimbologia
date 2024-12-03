@@ -1,5 +1,4 @@
 #Crie uma camada 'Área' com a área de interesse
-#Edite o caminho de saída.
 
 import os
 from qgis.core import QgsProject, QgsMapLayer
@@ -30,12 +29,12 @@ aoi_layer = QgsProject.instance().mapLayersByName('Area')[0]  # Substitua pelo n
 # Pega todas as camadas shapefile carregadas no projeto, exceto a camada de AOI
 shapefile_layers = [layer for layer in QgsProject.instance().mapLayers().values() if layer.type() == QgsMapLayer.VectorLayer and layer.name() != 'Area']
 
-# Define o diretório onde os arquivos de saída serão salvos
-output_directory = 'XXXXXXXX'  # Substitua pelo caminho da sua pasta de saída
+caminho, ok = QInputDialog.getText(None, 'Caminho de Saída', 'Digite o caminho para a pasta: ')
+output_directory = caminho  
 
 # Loop para clipar cada camada shapefile
 for layer in shapefile_layers:
-    output_path = os.path.join(output_directory, f'{layer.name()}_clipado.shp')
+    output_path = os.path.join(output_directory, f'{layer.name()}_clip.shp')
     
     # Clipar a camada
     clipe_layer(layer, aoi_layer, output_path)
