@@ -101,7 +101,14 @@ Requisitos:
 
 ## SimbologiaDeclividade
 
+Ajusta a simbologia de uma camada vetorial de polígonos utilizando uma classificação graduada baseada nos valores de um campo (`DN`). As cores seguem uma rampa linear invertida da paleta "Reds". Os intervalos são definidos de acordo com a divisão da EMBRAPA.
 
+Requisitos:
+- A camada vetorial deve conter um campo numérico chamado `DN`.
+- O projeto QGIS deve estar configurado com a camada vetorial nomeada 'Polígonos Declividade'.
+- O script utiliza funções para arredondamento de valores, criação de classes, interpolação de cores e aplicação de simbologia.
+
+  
 ## CriarMapa
 
 
