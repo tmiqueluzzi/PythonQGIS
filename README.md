@@ -76,7 +76,17 @@ Bibliotecas:
 - `processing`: Para execução de ferramentas de processamento no QGIS.
 - `qgis.core`: Para manipulação de camadas raster e projeto no QGIS.
 
-## VetorizaRaster
+## VetorizarRaster
+
+Converte rasters carregados no projeto QGIS em camadas vetoriais de polígonos, utilizando a ferramenta GDAL "Polygonize". O resultado é adicionado automaticamente ao projeto, permitindo análises vetoriais a partir dos valores originais do raster.
+
+Requisitos:
+- Os rasters de entrada devem estar carregados no projeto QGIS com nomes de 'Declividade Calculada' e 'Raster Reprojetado'.
+- O plugin de processamento GDAL deve estar habilitado no QGIS.
+
+Bibliotecas:
+- `processing`: Para execução de ferramentas de processamento no QGIS.
+- `qgis.core`: Para manipulação de camadas vetoriais e projeto no QGIS.
 
 
 ## SimbologiaAltitude
