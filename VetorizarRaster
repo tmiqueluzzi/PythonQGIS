@@ -1,0 +1,32 @@
+import processing
+
+# Função para converter um raster em vetor (polígonos) usando Polygonize
+def raster_para_vetor(input_raster):
+    # Executa a ferramenta Polygonize (raster to vector)
+    resultado = processing.run('gdal:polygonize', {
+        'INPUT': input_raster,
+        'BAND': 1,  # Usar a primeira banda do raster
+        'FIELD': 'DN',  # Nome do campo de saída que armazena os valores do raster
+        'EIGHT_CONNECTEDNESS': False,  # Conexão 4 (False) ou conexão 8 (True)
+        'OUTPUT': 'TEMPORARY_OUTPUT'  # Saída temporária
+    })
+    
+    return resultado['OUTPUT']
+
+# Raster de entrada
+raster_declividade = 'Declividade Calculada'
+raster_reprojetado = 'Raster Reprojetado'
+
+# Converter os rasters em polígonos
+vetor_declividade = raster_para_vetor(raster_declividade)
+vetor_reprojetado = raster_para_vetor(raster_reprojetado)
+
+# Adicionar os vetores resultantes ao projeto (opcional)
+for vetor_path, nome in [(vetor_declividade, 'Polígonos Declividade'), 
+                         (vetor_reprojetado, 'Polígonos Raster Reprojetado')]:
+    vetor_layer = QgsVectorLayer(vetor_path, nome, 'ogr')
+    if vetor_layer.isValid():
+        QgsProject.instance().addMapLayer(vetor_layer)
+        print(f"{nome} adicionado ao projeto.")
+    else:
+        print(f"Erro ao carregar {nome}.")
