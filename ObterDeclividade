@@ -1,0 +1,30 @@
+import processing
+from qgis.core import QgsRasterLayer, QgsProject
+
+# Defina o caminho do raster de elevação reprojetado (substitua pelo nome da camada ou caminho do arquivo)
+raster_elevacao = 'Raster Reprojetado'
+
+# Defina o fator Z (valor que ajusta a escala vertical, normalmente usado para compensar diferentes unidades)
+z_factor = 1.0
+
+# Definir o caminho de saída como temporário (QGIS vai armazenar na memória)
+saida_temporaria = 'TEMPORARY_OUTPUT'
+
+# Executa a ferramenta Slope (Declividade)
+resultado = processing.run('gdal:slope', {
+    'INPUT': raster_elevacao,
+    'BAND': 1,  # A banda do raster (normalmente 1, se houver apenas uma banda)
+    'SCALE': z_factor,  # Fator Z
+    'AS_PERCENT': False,  # Definir como False para graus em vez de porcentagem
+    'COMPUTE_EDGES': True,  # Definir para calcular bordas
+    'ZEVENBERGEN': False,  # Define o algoritmo padrão de cálculo de declividade
+    'OUTPUT': saida_temporaria  # Caminho temporário de saída
+})
+
+# Adicionar o raster resultante ao projeto
+raster_saida = QgsRasterLayer(resultado['OUTPUT'], 'Declividade Calculada')
+if raster_saida.isValid():
+    QgsProject.instance().addMapLayer(raster_saida)
+    print("Raster de declividade adicionado ao projeto.")
+else:
+    print("Erro ao carregar o raster de declividade.")
