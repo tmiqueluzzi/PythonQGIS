@@ -1,0 +1,74 @@
+from qgis.core import QgsFillSymbol, QgsRendererRange, QgsGraduatedSymbolRenderer
+from PyQt5.QtGui import QColor
+
+# Função para arredondar valores para múltiplos de 5
+def arredondar_para_5(valor, direcao):
+    if direcao == 'baixo':
+        return (valor // 5) * 5
+    elif direcao == 'cima':
+        return ((valor + 4) // 5) * 5
+
+# Função para gerar classes divididas de 5 em 5
+def gerar_classes(min_val, max_val):
+    classes = []
+    min_class = arredondar_para_5(min_val, 'baixo')
+    max_class = arredondar_para_5(max_val, 'cima')
+    
+    # Gerar intervalos de 5 em 5
+    for valor in range(min_class, max_class, 5):
+        classes.append((valor, valor + 5))
+    
+    return classes
+
+# Função para interpolar cores em uma rampa linear (cores invertidas)
+def interpolar_cores(cor_inicio, cor_fim, num_cores):
+    return [QColor(
+        int(cor_fim.red() + (cor_inicio.red() - cor_fim.red()) * i / (num_cores - 1)),
+        int(cor_fim.green() + (cor_inicio.green() - cor_fim.green()) * i / (num_cores - 1)),
+        int(cor_fim.blue() + (cor_inicio.blue() - cor_fim.blue()) * i / (num_cores - 1))
+    ) for i in range(num_cores)]
+
+# Função para obter o valor mínimo e máximo do campo 'DN'
+def obter_min_max_dn(camada, campo):
+    valores = [feature[campo] for feature in camada.getFeatures()]
+    return min(valores), max(valores)
+
+# Função para alterar a simbologia para Graduated usando a rampa de cores 'Blues' (invertida)
+def aplicar_simbologia_graduada_raster(camada):
+    # Obter os valores mínimo e máximo do campo 'DN'
+    min_val, max_val = obter_min_max_dn(camada, 'DN')
+
+    # Gerar classes baseadas nos valores min e max (divididos de 5 em 5)
+    classes = gerar_classes(min_val, max_val)
+
+    # Criar a rampa de cores 'Blues' (invertida)
+    cor_inicio = QColor(255, 255, 255)  # Azul claro
+    cor_fim = QColor(8, 48, 107)        # Azul escuro
+
+    # Gerar as cores invertidas para cada faixa
+    colors = interpolar_cores(cor_inicio, cor_fim, len(classes))
+
+    # Criar os intervalos de simbologia
+    ranges = []
+    for i, (min_class, max_class) in enumerate(classes):
+        simbolo = QgsFillSymbol.createSimple({'color': colors[i].name(), 'outline_color': colors[i].name(), 'outline_width': '0.0'})  # Stroke 'hairline'
+        range_item = QgsRendererRange(min_class, max_class, simbolo, f'{min_class} - {max_class}')
+        ranges.append(range_item)
+
+    # Definir o renderizador graduado
+    renderizador = QgsGraduatedSymbolRenderer('DN', ranges)
+    
+    # Usar os intervalos personalizados
+    renderizador.setMode(QgsGraduatedSymbolRenderer.Custom)
+
+    # Aplicar o renderizador à camada
+    camada.setRenderer(renderizador)
+    camada.triggerRepaint()  # Atualizar a camada para refletir a nova simbologia
+
+# Pegar a camada "Polígonos Raster Reprojetado" do projeto
+camada_raster_reprojetado = QgsProject.instance().mapLayersByName('Polígonos Raster Reprojetado')[0]
+
+# Aplicar a simbologia graduada com a rampa de cores 'Blues' (invertida)
+aplicar_simbologia_graduada_raster(camada_raster_reprojetado)
+
+print("Simbologia Graduated com Color Ramp 'Blues' (invertida) aplicada com sucesso à camada 'Polígonos Raster Reprojetado'.")
