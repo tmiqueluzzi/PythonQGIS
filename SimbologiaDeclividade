@@ -1,0 +1,50 @@
+from qgis.core import QgsFillSymbol, QgsRendererRange, QgsGraduatedSymbolRenderer
+from PyQt5.QtGui import QColor
+
+# Função para interpolar cores em uma rampa linear
+def interpolar_cores(cor_inicio, cor_fim, num_cores):
+    return [QColor(
+        int(cor_inicio.red() + (cor_fim.red() - cor_inicio.red()) * i / (num_cores - 1)),
+        int(cor_inicio.green() + (cor_fim.green() - cor_inicio.green()) * i / (num_cores - 1)),
+        int(cor_inicio.blue() + (cor_fim.blue() - cor_inicio.blue()) * i / (num_cores - 1))
+    ) for i in range(num_cores)]
+
+# Função para alterar a simbologia para Graduated usando a rampa de cores 'Reds'
+def aplicar_simbologia_graduada(camada):
+    # Definir as 5 classes (ranges) que serão aplicadas
+    ranges = []
+
+    # Definir as faixas de valores e a simbologia para cada uma
+    classes = [(0, 3), (3, 8), (8, 20), (20, 45), (45, 1000)]  # Ajustar o limite superior conforme necessário
+
+    # Definir as cores de início e fim da rampa de cores 'Reds'
+    cor_inicio = QColor(255, 255, 255)  # Vermelho claro
+    cor_fim = QColor(255, 0, 0)        # Vermelho escuro
+
+    # Gerar as cores para cada faixa com base na interpolação
+    colors = interpolar_cores(cor_inicio, cor_fim, len(classes))
+
+    # Criar os intervalos de simbologia
+    for i, (min_val, max_val) in enumerate(classes):
+        # Definir o símbolo de preenchimento
+        simbolo = QgsFillSymbol.createSimple({'color': colors[i].name(), 'outline_color': colors[i].name(), 'outline_width': '0.0'})  # Espessura 'hairline'
+        range_item = QgsRendererRange(min_val, max_val, simbolo, f'{min_val} - {max_val}')
+        ranges.append(range_item)
+
+    # Definir o renderizador graduado
+    renderizador = QgsGraduatedSymbolRenderer('DN', ranges)
+    
+    # Usar os intervalos personalizados
+    renderizador.setMode(QgsGraduatedSymbolRenderer.Custom)
+
+    # Aplicar o renderizador à camada
+    camada.setRenderer(renderizador)
+    camada.triggerRepaint()  # Atualizar a camada para refletir a nova simbologia
+
+# Pegar a camada "Polígonos Declividade" do projeto
+camada_declividade = QgsProject.instance().mapLayersByName('Polígonos Declividade')[0]
+
+# Aplicar a simbologia graduada com a rampa de cores 'Reds'
+aplicar_simbologia_graduada(camada_declividade)
+
+print("Simbologia Graduated com Color Ramp 'Reds' e 'hairline stroke' aplicada com sucesso à camada 'Polígonos Declividade'.")
