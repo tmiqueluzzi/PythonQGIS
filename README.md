@@ -91,6 +91,13 @@ Bibliotecas:
 
 ## SimbologiaAltitude
 
+Ajusta a simbologia de uma camada vetorial de polígonos utilizando uma classificação graduada baseada nos valores de um campo (`DN`). As cores seguem uma rampa linear invertida da paleta "Blues". Os intervalos são criados em classes de 5 unidades.
+
+Requisitos:
+- A camada vetorial deve conter um campo numérico chamado `DN`.
+- O projeto QGIS deve estar configurado com a camada vetorial nomeada 'Polígonos Raster Reprojetado'.
+- O script utiliza funções para arredondamento de valores, criação de classes, interpolação de cores e aplicação de simbologia.
+
 
 ## SimbologiaDeclividade
 
