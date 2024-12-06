@@ -66,6 +66,15 @@ Bibliotecas:
 
 ## ObterDeclividade
 
+Utiliza a ferramenta "Slope" do GDAL para calcular a declividade de um raster de elevação digital (DEM) carregado no projeto QGIS. O resultado é adicionado automaticamente como uma camada raster ao projeto.
+
+Requisitos:
+- O raster de elevação (DEM) deve estar carregado no projeto QGIS com nome 'Raster Reprojetado'.
+- O plugin de processamento GDAL deve estar habilitado no QGIS.
+
+Bibliotecas:
+- `processing`: Para execução de ferramentas de processamento no QGIS.
+- `qgis.core`: Para manipulação de camadas raster e projeto no QGIS.
 
 ## VetorizaRaster
 
