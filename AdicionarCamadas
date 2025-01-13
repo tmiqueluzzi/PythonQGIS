@@ -9,6 +9,40 @@ from qgis.core import QgsVectorLayer, QgsProject
 4. Roda a lista, adicionando os arquivos.
 '''
 
+caminhos = []
+
+while True:
+    # Caminhos onde estão localizados os shapefiles
+    base_path, ok = QInputDialog.getText(None, "Caminho", "Indique o caminho que o código percorrerá [000 cancela]: ")
+    if base_path == '000':
+        break
+    else:
+        caminhos.append(base_path)
+
+# Lista para armazenar os caminhos dos shapefiles
+shapefiles = []
+
+# Percorre todas as pastas e subpastas do caminho principal
+for caminho in caminhos:
+    for root, dirs, files in os.walk(caminho):
+        for file in files:
+            if file.endswith(".shp"):  # Verifica se o arquivo tem a extensão .shp
+                shapefiles.append(os.path.join(root, file))
+
+# Itera pela lista de shapefiles e os adiciona ao projeto
+for shp in shapefiles:
+    if os.path.exists(shp):  # Verifica se o shapefile existe (precaução extra)
+        # Cria a camada vetor
+        layer = QgsVectorLayer(shp, os.path.basename(shp), "ogr")
+        
+        if not layer.isValid():
+            print(f"Falha ao carregar {shp}")
+        else:
+            # Adiciona a camada ao projeto
+            QgsProject.instance().addMapLayer(layer)
+            print(f"Shapefile {shp} adicionado com sucesso.")
+    else:
+        print(f"O arquivo {shp} não foi encontrado.")
 # Caminho principal onde estão localizados os shapefiles
 base_path, ok = QInputDialog.getText(None, "Caminho", "Indique o caminho que o código percorrerá: ")
 
