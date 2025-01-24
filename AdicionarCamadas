@@ -26,7 +26,7 @@ shapefiles = []
 for caminho in caminhos:
     for root, dirs, files in os.walk(caminho):
         for file in files:
-            if file.endswith(".shp"):  # Verifica se o arquivo tem a extensão .shp
+            if file.endswith(".shp") or file.endswith(".geojson"):  # Verifica se o arquivo tem a extensão .shp ou .geojson
                 shapefiles.append(os.path.join(root, file))
 
 # Itera pela lista de shapefiles e os adiciona ao projeto
