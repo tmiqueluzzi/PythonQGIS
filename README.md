@@ -108,6 +108,8 @@ Requisitos:
 - O projeto QGIS deve estar configurado com a camada vetorial nomeada 'Polígonos Declividade'.
 - O script utiliza funções para arredondamento de valores, criação de classes, interpolação de cores e aplicação de simbologia.
 
+## ExportarProjeto
+
   
 ## CriarMapa
 
