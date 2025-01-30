@@ -1,0 +1,94 @@
+## temporario
+
+from qgis.core import (
+    QgsVectorLayer,
+    QgsVectorFileWriter,
+    QgsProject,
+    QgsFields,
+    QgsField,
+    QgsWkbTypes
+)
+from qgis.PyQt.QtCore import QVariant
+import os
+
+# Definir o caminho da pasta e do arquivo GPKG
+pasta_X = r"C:\Users\theom\Documents\Teste Python"
+os.makedirs(pasta_X, exist_ok=True)  # Garante que a pasta existe
+
+saida_gpkg = os.path.join(pasta_X, "teste_python3.gpkg")
+saida_txt = os.path.join(pasta_X, "relatorio.txt")  # Arquivo de relatório
+
+# Criar uma camada vetorial temporária com um atributo 'id'
+camada_temporaria = QgsVectorLayer(
+    "None",
+    "camada_vazia",
+    "memory"
+)
+
+camada_temporaria.dataProvider().addAttributes([QgsField("id", QVariant.Int)])
+camada_temporaria.updateFields()
+
+# Configuração para salvar a camada dentro do GPKG
+options = QgsVectorFileWriter.SaveVectorOptions()
+options.fileEncoding = "UTF-8"
+options.layerName = "camada_vazia"
+options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile  # Cria novo ou sobrescreve
+
+# Exportar camada para GeoPackage
+erro = QgsVectorFileWriter.writeAsVectorFormatV2(
+    camada_temporaria,
+    saida_gpkg,
+    QgsProject.instance().transformContext(),
+    options
+)
+
+# Verificar se o arquivo foi criado corretamente
+if erro[0] == QgsVectorFileWriter.NoError and os.path.exists(saida_gpkg):
+    print(f"✅ GeoPackage criado com sucesso: {saida_gpkg}")
+else:
+    print(f"❌ Falha ao criar o GeoPackage! Código do erro: {erro[0]}")
+
+
+# Obter todas as camadas do projeto
+projeto = QgsProject.instance()
+camadas = projeto.mapLayers().values()
+
+# Lista para armazenar nomes de camadas que não são vetoriais
+camadas_nao_vetoriais = []
+
+# Processar cada camada no projeto
+for camada in camadas:
+    if isinstance(camada, QgsVectorLayer):  # Processo A: Se for vetorial
+        nome_da_camada = camada.name()
+        print(f"🔹 Exportando camada vetorial: {nome_da_camada}")
+
+        # Configuração para salvar no GeoPackage
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.fileEncoding = "UTF-8"
+        options.layerName = nome_da_camada
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer  # Adiciona camadas no GPKG
+
+        # Tentar exportar a camada
+        erro = QgsVectorFileWriter.writeAsVectorFormatV2(
+            camada,
+            saida_gpkg,
+            QgsProject.instance().transformContext(),
+            options
+        )
+
+        if erro[0] == QgsVectorFileWriter.NoError:
+            print(f"✅ {nome_da_camada} adicionada ao GeoPackage.")
+        else:
+            print(f"❌ Erro ao exportar {nome_da_camada}: Código {erro[0]}")
+
+    else:  # Processo B: Se não for vetorial, adicionar à lista de exclusão
+        camadas_nao_vetoriais.append(camada.name())
+
+# Exibir relatório final
+print("\n📌 Relatório Final:")
+if camadas_nao_vetoriais:
+    print("As seguintes camadas **não são vetoriais** e não foram exportadas:")
+    for nome in camadas_nao_vetoriais:
+        print(f"❌ {nome}")
+else:
+    print("Todas as camadas eram vetoriais e foram exportadas com sucesso. 🎉")
